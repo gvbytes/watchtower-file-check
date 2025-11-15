@@ -1,10 +1,8 @@
-================================================================================
-  FILE INTEGRITY MONITOR — Read Me
-  A Simple Guide for Everyone (Yes, Even 14-Year-Olds!)
-================================================================================
+# Watchtower File Check
 
-Hi! This guide will explain what this tool does, the ideas behind it, and
-exactly how to run it. No prior experience needed.
+Watchtower File Check keeps a baseline of file hashes for a folder and reports
+what changed later. It is a practical way to learn how integrity monitoring,
+hashing, and simple forensic checks fit together.
 
 
 --------------------------------------------------------------------------------
