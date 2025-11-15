@@ -191,7 +191,7 @@ def compute_sha256(filepath: str, chunk_size: int = 65536) -> str:
     return sha256.hexdigest()  # Returns the final 64-char hex string
 
 
-def scan_directory(target_dir: str) -> dict:
+def scan_directory(target_dir: str, exclude_paths: set[str] | None = None) -> dict:
     """
     Recursively walk a directory tree, compute SHA-256 hashes for every
     regular file found, and return a dictionary mapping file paths to hashes.
@@ -223,6 +223,7 @@ def scan_directory(target_dir: str) -> dict:
         print(colorize(f"[ERROR] '{target_dir}' is not a valid directory.", Colors.RED))
         sys.exit(1)
 
+    excluded = {os.path.abspath(path) for path in (exclude_paths or set())}
     file_hashes = {}
     file_count = 0
     skipped_count = 0
@@ -238,6 +239,8 @@ def scan_directory(target_dir: str) -> dict:
 
         for filename in sorted(filenames):
             full_path = os.path.normpath(os.path.join(dirpath, filename))
+            if os.path.abspath(full_path) in excluded:
+                continue
             file_count += 1
 
             # Progress indicator every 50 files
@@ -292,7 +295,7 @@ def create_baseline(target_dir: str, baseline_path: str) -> None:
         target_dir   : Directory to scan.
         baseline_path: Path where the baseline JSON file will be saved.
     """
-    hashes = scan_directory(target_dir)
+    hashes = scan_directory(target_dir, exclude_paths={baseline_path})
 
     baseline_data = {
         "created_at":       datetime.datetime.now().isoformat(timespec="seconds"),
@@ -406,7 +409,7 @@ def check_integrity(target_dir: str, baseline_path: str) -> None:
     baseline_hashes = baseline_data["hashes"]  # { path: hash }
 
     # Rescan the directory to get current state
-    current_hashes = scan_directory(target_dir)  # { path: hash }
+    current_hashes = scan_directory(target_dir, exclude_paths={baseline_path})  # { path: hash }
 
     # Convert to sets for fast set-difference operations
     baseline_paths = set(baseline_hashes.keys())

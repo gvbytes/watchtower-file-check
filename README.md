@@ -25,6 +25,10 @@ The tool will tell you:
   * [RED]    Files that were CHANGED — someone or something edited them
   * [RED]    Files that are MISSING — they were there before, now they're gone
 
+Tip: If you store `baseline.json` inside the monitored folder, the tool ignores
+that baseline file during scans so it does not report its own bookkeeping as a
+new file.
+
 
 --------------------------------------------------------------------------------
   THE COOL IDEA: CRYPTOGRAPHIC HASHES (DIGITAL FINGERPRINTS)
