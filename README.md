@@ -1,59 +1,45 @@
-# Watchtower File Check
+﻿# Watchtower File Check
 
 Watchtower File Check keeps a baseline of file hashes for a folder and reports
 what changed later. It is a practical way to learn how integrity monitoring,
 hashing, and simple forensic checks fit together.
 
 
---------------------------------------------------------------------------------
-  WHAT IS THIS TOOL?
---------------------------------------------------------------------------------
+## What it does
 
-This is a "File Integrity Monitor" (we'll call it FIM for short).
+The monitor records SHA-256 hashes for every file in a target folder. Later, it scans the same folder again and compares the current hashes with the saved baseline.
 
-Imagine you have a folder of really important files — maybe your homework, a
-game's config files, or even system files on a computer. The FIM tool takes a
-"photograph" of all those files (not a real photo — more like a digital
-fingerprint of each file). Later, you can run the tool again and it will
-compare the current fingerprints to the old ones to see if anything changed.
-
-The tool will tell you:
-  * [GREEN]  Files that are exactly the same as before — totally safe!
-  * [YELLOW] Files that are BRAND NEW — they weren't there before
-  * [RED]    Files that were CHANGED — someone or something edited them
-  * [RED]    Files that are MISSING — they were there before, now they're gone
+It reports:
+  * unchanged files
+  * new files
+  * modified files
+  * deleted files
 
 Tip: If you store `baseline.json` inside the monitored folder, the tool ignores
 that baseline file during scans so it does not report its own bookkeeping as a
 new file.
 
 
---------------------------------------------------------------------------------
-  THE COOL IDEA: CRYPTOGRAPHIC HASHES (DIGITAL FINGERPRINTS)
---------------------------------------------------------------------------------
+## Hashing model
 
-Every file on a computer is made of "bits" — tiny pieces of data (0s and 1s).
-
-A "hash function" is a special math recipe that reads ALL those bits in a file
-and spits out a short string of letters and numbers, like:
+A cryptographic hash function reads a file and produces a fixed-size digest, for example:
 
   2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
 
-That 64-character string is called a "hash" or "digest". It's like a unique
-ID card for that exact file. The really cool thing is:
+That 64-character value is the file hash. The properties that matter here are:
 
-  COOL PROPERTY 1: ALWAYS THE SAME
+  PROPERTY 1: DETERMINISTIC
   If you hash the same file twice, you ALWAYS get the exact same hash.
 
-  COOL PROPERTY 2: TINY CHANGE = HUGE DIFFERENCE
+  PROPERTY 2: SMALL CHANGE, DIFFERENT HASH
   If you change even ONE letter in a file (like changing "hello" to "Hello"),
   the hash changes COMPLETELY. Not just a little bit — totally different!
 
-  COOL PROPERTY 3: CAN'T GO BACKWARDS
+  PROPERTY 3: ONE-WAY
   You can't take a hash and figure out what the original file was.
   It's a one-way street.
 
-  COOL PROPERTY 4: ALMOST IMPOSSIBLE TO FAKE
+  PROPERTY 4: COLLISION RESISTANT
   It's practically impossible for two different files to have the same hash.
 
 The specific hash recipe we use is called SHA-256. It's created by NIST
@@ -273,3 +259,5 @@ That's exactly what security software does on real computers every day.
 ================================================================================
   Happy learning! You're now thinking like a cybersecurity analyst.
 ================================================================================
+
+
